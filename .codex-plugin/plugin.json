@@ -1,0 +1,96 @@
+{
+  "name": "zibby",
+  "version": "0.1.0",
+  "description": "Build web apps on Zibby App Kit and publish them on Zibby (zibby.run) from your agent: create the app, push or connect the source, build a private preview, and publish when you say so.",
+  "author": {
+    "name": "Aibrary LTD",
+    "url": "https://zibby.run"
+  },
+  "homepage": "https://zibby.run/for-ai-agents",
+  "repository": "https://github.com/zibby-run/zibby-plugin",
+  "license": "MIT",
+  "keywords": ["zibby", "app-kit", "web-apps", "publish", "hosting"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Zibby",
+    "shortDescription": "Publish your apps on Zibby",
+    "longDescription": "Zibby (zibby.run) hosts small web apps and lists them in its catalogue. This plugin connects your agent to your own Zibby account, so the agent can put an app you build together online.\n\nWhat the agent can do:\n- Read the Zibby App Kit guide and build the app on Zibby App Kit (@zibby-run/app-kit). Static apps and server (Node) apps are supported.\n- Create the app on your account and send its source files, or connect a GitHub repository through a link you open yourself.\n- Build a private preview and give you the link, so you can try the app before anyone else sees it.\n- Publish the version you previewed, when you say so. Publishing follows Zibby's app review, so an app can go live at once or wait for review.\n- Set the app's name, summary, description and category, and make an icon or cover picture.\n- Tell you your credit balance and how many free apps you have left.\n\nWho it is for: people who build web apps with an AI agent and want them online without setting up hosting.\n\nLimits: the agent works only with your own Zibby apps. Zibby builds only apps made with Zibby App Kit. Pictures, and publishing once your free apps are used up, use Zibby credits. You allow this spending once, on Zibby's consent page when you connect; after that the agent goes ahead when your balance covers it, and asks you to top up on zibby.run when it does not. Credits are bought on zibby.run, not in the chat. You sign in with your Zibby account through Zibby's own sign-in page; the plugin never sees your password.",
+    "developerName": "Aibrary LTD",
+    "category": "Developer Tools",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://zibby.run/for-ai-agents",
+    "supportURL": "https://zibby.run/support",
+    "privacyPolicyURL": "https://zibby.run/legal/privacy",
+    "termsOfServiceURL": "https://zibby.run/legal/terms",
+    "defaultPrompt": [
+      "Build a small tip calculator with Zibby App Kit and give me a private preview link on Zibby.",
+      "Publish the app in this folder on Zibby.",
+      "How many Zibby credits do I have, and which of my apps are live?"
+    ],
+    "brandColor": "#4D30F2",
+    "composerIcon": "./assets/logo.svg",
+    "logo": "./assets/logo.svg"
+  },
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/get-started/SKILL.md",
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Account question answered from the account tool, with nothing changed.",
+              "prompt": "How many Zibby credits do I have, and how many free apps do I have left?",
+              "tools_triggered": ["my_account"],
+              "expected_behavior": "States the signed-in account's credit balance and the free apps used and left, and offers the top-up link https://zibby.run/billing only if asked where to buy credits. Makes no change."
+            },
+            {
+              "description": "A new app built on Zibby App Kit ends at a private preview, not a publish.",
+              "prompt": "Build a small tip calculator with Zibby App Kit and give me a private preview link on Zibby.",
+              "tools_triggered": ["get_app_guide", "create_app", "push_files", "build_app", "get_build"],
+              "expected_behavior": "Reads the App Kit guide, writes the app with @zibby-run/app-kit, creates the app, pushes the source, builds it and returns the private preview link. Does not publish."
+            },
+            {
+              "description": "Publishing the previewed version after the person asks.",
+              "prompt": "I opened the preview and it looks good. Publish my tip calculator on Zibby.",
+              "tools_triggered": ["list_my_apps", "get_build", "publish"],
+              "expected_behavior": "Publishes the exact version that was previewed and reports the outcome from the tool: live with its address, or waiting for Zibby's review. It does not ask about credits."
+            },
+            {
+              "description": "A picture is drawn at once, because spending was allowed when Zibby was connected.",
+              "prompt": "Make an icon for my tip calculator on Zibby.",
+              "tools_triggered": ["list_my_apps", "generate_icon"],
+              "expected_behavior": "Draws the icon with a new request_id, without asking about the price, then says the icon is set, how many credits it used (or that the charge is still being confirmed) and how many are left, from the tool's answer."
+            },
+            {
+              "description": "Editing the listing text of the person's own app.",
+              "prompt": "Change the summary of my tip calculator on Zibby to: Split a restaurant bill in seconds.",
+              "tools_triggered": ["list_my_apps", "set_details"],
+              "expected_behavior": "Finds the app on the person's account, sets the summary to the given text and confirms the change. Does not publish a new version."
+            }
+          ],
+          "negative": [
+            {
+              "description": "A request unrelated to apps or Zibby.",
+              "prompt": "What should I cook tonight with rice, eggs and spinach?",
+              "expected_behavior": "Answers the question without calling any Zibby tool and without mentioning Zibby."
+            },
+            {
+              "description": "Coding work that is not about sharing or publishing an app.",
+              "prompt": "Write a Python script that renames all .jpeg files in a folder to .jpg.",
+              "expected_behavior": "Writes the script without calling any Zibby tool and without suggesting Zibby, since the person did not ask to share or publish anything."
+            },
+            {
+              "description": "A request the plugin has no tool for: deleting apps.",
+              "prompt": "Delete all my apps on Zibby.",
+              "expected_behavior": "Calls no tool that changes anything. Says the plugin cannot delete apps and that the person can manage their apps on zibby.run."
+            }
+          ]
+        }
+      },
+      "publication": {
+        "release_notes": "First release: connect a Zibby account, build apps on Zibby App Kit, push source or connect GitHub, private preview builds, publishing that follows Zibby's app review, app details and pictures. Credits are spent as allowed once on Zibby's consent page, with a top-up link when the balance is too low."
+      }
+    }
+  }
+}

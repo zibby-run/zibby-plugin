@@ -1,0 +1,19 @@
+{
+  "name": "zibby",
+  "displayName": "Zibby",
+  "version": "0.1.0",
+  "description": "Build web apps on Zibby App Kit and publish them on Zibby (zibby.run) from your agent: create the app, push or connect the source, build a private preview, and publish when you say so.",
+  "author": {
+    "name": "Aibrary LTD",
+    "url": "https://zibby.run"
+  },
+  "homepage": "https://zibby.run/for-ai-agents",
+  "repository": "https://github.com/zibby-run/zibby-plugin",
+  "license": "MIT",
+  "keywords": ["zibby", "app-kit", "web-apps", "publish", "hosting"],
+  "icon": "./assets/logo.svg",
+  "documentationUrl": "https://zibby.run/for-ai-agents",
+  "supportUrl": "https://zibby.run/support",
+  "privacyPolicyUrl": "https://zibby.run/legal/privacy",
+  "termsOfServiceUrl": "https://zibby.run/legal/terms"
+}
